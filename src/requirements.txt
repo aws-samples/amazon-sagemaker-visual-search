@@ -1,0 +1,5 @@
+pip>=20.0.2
+numpy
+pandas
+Pillow
+tensorflow==2.1.0
