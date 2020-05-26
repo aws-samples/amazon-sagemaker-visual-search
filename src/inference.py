@@ -42,15 +42,6 @@ def input_handler(data, context):
     else:
         _return_error(415, 'Unsupported content type "{}"'.format(context.request_content_type or 'Unknown'))
 
-    if context.request_content_type == 'text/csv':
-        # very simple csv handler
-        return json.dumps({
-            'instances': [float(x) for x in data.read().decode('utf-8').split(',')]
-        })
-
-    raise ValueError('{{"error": "unsupported content type {}"}}'.format(
-        context.request_content_type or "unknown"))
-
 
 def output_handler(data, context):
     """Post-process TensorFlow Serving output before it is returned to the client.
