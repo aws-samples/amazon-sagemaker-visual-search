@@ -1,0 +1,86 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'backend
+
+  Sample SAM Template for backend
+
+  '
+Parameters:
+  BucketName:
+    Type: String
+  DomainName:
+    Type: String
+  ElasticSearchURL:
+    Type: String
+  SagemakerEndpoint:
+    Type: String
+Globals:
+  Function:
+    Timeout: 60
+    MemorySize: 512
+  Api:
+    Cors:
+      AllowMethods: '''*'''
+      AllowHeaders: '''*'''
+      AllowOrigin: '''*'''
+Resources:
+  PostFetchSimilarPhotosLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: s3://lalsaado-content/visual-search-blog/function/13aee700cafee7896e3c3bc1a24b6cf5
+      Handler: app.lambda_handler
+      Runtime: python3.7
+      Environment:
+        Variables:
+          ES_ENDPOINT:
+            Ref: ElasticSearchURL
+          SM_ENDPOINT:
+            Ref: SagemakerEndpoint
+      Policies:
+      - Version: '2012-10-17'
+        Statement:
+        - Sid: AllowSagemakerInvokeEndpoint
+          Effect: Allow
+          Action:
+          - sagemaker:InvokeEndpoint
+          Resource:
+          - Fn::Sub: arn:aws:sagemaker:${AWS::Region}:${AWS::AccountId}:endpoint/${SagemakerEndpoint}
+      - Version: '2012-10-17'
+        Statement:
+        - Sid: AllowESS
+          Effect: Allow
+          Action:
+          - es:*
+          Resource:
+          - Fn::Sub: arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/${DomainName}/*
+      - S3ReadPolicy:
+          BucketName:
+            Ref: BucketName
+      Events:
+        PostURL:
+          Type: Api
+          Properties:
+            Path: /postURL
+            Method: post
+        PostImage:
+          Type: Api
+          Properties:
+            Path: /postImage
+            Method: post
+Outputs:
+  ImageSimilarityApi:
+    Description: API Gateway endpoint URL for Prod stage for fetchPhoto function
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/
+  PostFetchSimilarPhotosLambda:
+    Description: Hello World Lambda Function ARN
+    Value:
+      Fn::GetAtt:
+      - PostFetchSimilarPhotosLambda
+      - Arn
+  PostFetchSimilarPhotosLambdaIamRole:
+    Description: Implicit IAM Role created for Hello World function
+    Value:
+      Fn::GetAtt:
+      - PostFetchSimilarPhotosLambda
+      - Arn
