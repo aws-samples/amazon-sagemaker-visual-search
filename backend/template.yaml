@@ -27,7 +27,7 @@ Resources:
   PostFetchSimilarPhotosLambda:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://lalsaado-content/visual-search-blog/function/13aee700cafee7896e3c3bc1a24b6cf5
+      CodeUri: s3://aws-ml-blog/artifacts/visual-search/function.zip
       Handler: app.lambda_handler
       Runtime: python3.7
       Environment:
