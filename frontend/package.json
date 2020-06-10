@@ -15,8 +15,9 @@
     "react-dom": "^16.13.1",
     "react-dropzone": "^11.0.1",
     "react-images-upload": "^1.2.8",
-    "react-scripts": "3.4.1",
-    "typeface-roboto": "0.0.75"
+    "react-scripts": "^3.4.1",
+    "typeface-roboto": "^0.0.75",
+    "websocket-extensions": "^0.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
