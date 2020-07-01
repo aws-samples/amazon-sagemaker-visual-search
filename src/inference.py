@@ -8,6 +8,19 @@ from tensorflow.keras.preprocessing import image
 from tensorflow.keras.applications.resnet50 import ResNet50, preprocess_input
 from PIL import Image
 
+# restricting memory growth
+physical_gpus = tf.config.experimental.list_physical_devices('GPU')
+if physical_gpus:
+  try:
+    # Currently, memory growth needs to be the same across GPUs
+    for gpu in physical_gpus:
+      tf.config.experimental.set_memory_growth(gpu, True)
+    logical_gpus = tf.config.experimental.list_logical_devices('GPU')
+    print(len(physical_gpus), "Physical GPUs,", len(logical_gpus), "Logical GPUs")
+  except RuntimeError as e:
+    # Memory growth must be set before GPUs have been initialized
+    print(e)
+
 HEIGHT = 224
 WIDTH  = 224
 
