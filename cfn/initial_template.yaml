@@ -7,7 +7,7 @@ Resources:
     Properties:
       InstanceType: ml.t3.medium
       RoleArn: !GetAtt Role.Arn
-      DefaultCodeRepository: https://github.com/aws-samples/amazon-sagemaker-visual-search
+      DefaultCodeRepository: https://github.com/ksmin23/amazon-sagemaker-visual-search
 
   Role:
     Type: AWS::IAM::Role
@@ -117,6 +117,6 @@ Outputs:
     Description: SageMaker Notebook Instance
     Value: !Join 
       - ''
-      - - 'https://console.aws.amazon.com/sagemaker/home?region=us-east-1#/notebook-instances/openNotebook/'
+      - - Fn::Sub: https://console.aws.amazon.com/sagemaker/home?region=${AWS::Region}#/notebook-instances/openNotebook/
         - !GetAtt NotebookInstance.NotebookInstanceName
         - '?view=classic'
