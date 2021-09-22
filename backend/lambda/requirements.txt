@@ -1,4 +1,4 @@
 requests
 boto3
-elasticsearch
+elasticsearch < 7.14
 requests-aws4auth

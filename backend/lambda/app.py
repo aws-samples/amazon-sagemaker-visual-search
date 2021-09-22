@@ -33,7 +33,7 @@ def get_neighbors(features, es, k_neighbors=3):
         body={
             'size': k_neighbors,
             'query': {'knn': {'zalando_img_vector': {'vector': features, 'k': k_neighbors}}}}
-        )
+    )
     s3_uris = [res['hits']['hits'][x]['_source']['image'] for x in range(k_neighbors)]
 
     return s3_uris
@@ -75,7 +75,7 @@ def lambda_handler(event, context):
         region,
         service,
         session_token=credentials.token
-        )
+    )
 
     es = Elasticsearch(
         hosts=[{'host': elasticsearch_endpoint, 'port': 443}],

@@ -14,6 +14,8 @@ Parameters:
     Type: String
   SagemakerEndpoint:
     Type: String
+    LambdaCodeFile:
+    Type: String
 Globals:
   Function:
     Timeout: 60
@@ -27,7 +29,11 @@ Resources:
   PostFetchSimilarPhotosLambda:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://aws-ml-blog/artifacts/visual-search/function.zip
+      CodeUri:
+        # https://github.com/aws/serverless-application-model/blob/master/HOWTO.md
+        # Using Intrinsic Functions
+        Bucket: !Ref BucketName
+        Key: !Ref LambdaCodeFile
       Handler: app.lambda_handler
       Runtime: python3.7
       Environment:
