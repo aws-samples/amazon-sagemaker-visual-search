@@ -33,15 +33,19 @@ To get started, complete the following steps:<br/>
     [![Launch Stack](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png)](https://console.aws.amazon.com/cloudformation/home#/stacks/new?stackName=vis-search)
 
 <div>
-    <img src="./cf-launch-guide.png", alt="diagram" with="960" height="1687" />
+    <img src="./cf-launch-guide.png", alt with="960" height="1687" />
 </div>
+  
+  3. Wait for the stack to complete executing.<br/>
+    When the stack creation is complete, you see the status **CREATE_COMPLETE**.<br/>
+    You can look on the **Resources** tab to see all the resources the CloudFormation template created.
 
+  4. On the **Outputs** tab, choose the **SageMakerNotebookURL** value.<br/>
+     This hyperlink opens the Jupyter notebook on your Amazon SageMaker notebook instance that you use to complete the rest of the lab.
 
-When the stack creation is complete, you see the status **CREATE_COMPLETE**.<br/>
-You can look on the **Resources** tab to see all the resources the CloudFormation template created.<br/>
-
-On the **Outputs** tab, choose the **SageMakerNotebookURL** value.<br/>
-This hyperlink opens the Jupyter notebook on your Amazon SageMaker notebook instance that you use to complete the rest of the lab.
+<div>
+    <img src="./cf-stack-outputs.png", alt with="800" height="465" />
+</div>
 
 ## License
 

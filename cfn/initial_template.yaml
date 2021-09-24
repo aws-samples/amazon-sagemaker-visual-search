@@ -1,13 +1,19 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: Template to start the visual search blog
 
+Parameters:
+  SageMakerGitURL:
+    Type: String
+    Description: The name of the Git repository
+    Default: https://github.com/ksmin23/amazon-sagemaker-visual-search
+
 Resources: 
   NotebookInstance:
     Type: AWS::SageMaker::NotebookInstance
     Properties:
       InstanceType: ml.t3.medium
       RoleArn: !GetAtt Role.Arn
-      DefaultCodeRepository: https://github.com/ksmin23/amazon-sagemaker-visual-search
+      DefaultCodeRepository: !Ref SageMakerGitURL
 
   Role:
     Type: AWS::IAM::Role
