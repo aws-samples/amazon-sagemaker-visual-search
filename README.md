@@ -13,6 +13,8 @@ When we present a new query image, it's computing the related feature vector fro
 
 ## Deploy
 
+![diagram](./visual-search-arch.svg)
+
 You use a CloudFormation stack to deploy the solution. The stack creates all the necessary resources, including the following:<br/>
 
  + An Amazon SageMaker notebook instance to run Python code in a Jupyter notebook
