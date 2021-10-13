@@ -49,6 +49,11 @@ To get started, complete the following steps:<br/>
     <img src="./cf-stack-outputs.png", alt with="800" height="465" />
 </div>
 
+   5. You should be on the Jupyter notebook landing page.<br/>
+      Choose **visual-image-search.ipynb.** <br/>
+      Select the kernel as `conda_tensorflow_p36`
+
+
 ## License
 
 This library is licensed under the MIT-0 License. See the LICENSE file.
