@@ -2,4 +2,4 @@ pip>=20.0.2
 numpy
 pandas
 Pillow==8.2.0
-tensorflow==2.1.0
+tensorflow==2.5.3
