@@ -1,0 +1,102 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Template to create CloudFront for frontend page
+
+Parameters:
+  S3BucketForStaticContents:
+    Type: String
+    Description: s3 bucket that the site contents are deployed to
+
+Resources:
+  CloudFrontOAI:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment:
+          Fn::Join:
+            - ""
+            - - "Allows CloudFront to reach the bucket: "
+              - Ref: S3BucketForStaticContents
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+
+  SiteBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket:
+        Ref: S3BucketForStaticContents
+      PolicyDocument:
+        Statement:
+          - Action: s3:GetObject
+            Effect: Allow
+            Principal:
+              CanonicalUser:
+                Fn::GetAtt:
+                  - CloudFrontOAI
+                  - S3CanonicalUserId
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - ":s3:::"
+                  - Ref: S3BucketForStaticContents
+                  - /*
+        Version: "2012-10-17"
+
+  CloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        CustomErrorResponses:
+          - ErrorCachingMinTTL: 10
+            ErrorCode: 403
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+        DefaultCacheBehavior:
+          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
+          Compress: true
+          TargetOriginId: vissearchcloudfrontmyDistOrigin157DA494D
+          ViewerProtocolPolicy: allow-all
+        Enabled: true
+        HttpVersion: http2
+        IPV6Enabled: true
+        Origins:
+          - DomainName:
+              Fn::Join:
+                - ""
+                - - Ref: S3BucketForStaticContents
+                  - !Sub .s3.${AWS::Region}.
+                  - Ref: AWS::URLSuffix
+            Id: vissearchcloudfrontmyDistOrigin157DA494D
+            S3OriginConfig:
+              OriginAccessIdentity:
+                Fn::Join:
+                  - ""
+                  - - origin-access-identity/cloudfront/
+                    - Ref: CloudFrontOAI
+
+Outputs:
+  SiteBucket:
+    Value:
+      Ref: S3BucketForStaticContents
+    Export:
+      Name: SiteBucket
+  DistributionId:
+    Value:
+      Ref: CloudFrontDistribution
+    Export:
+      Name: DistributionId
+  DistributionDomainName:
+    Value:
+      Fn::GetAtt:
+        - CloudFrontDistribution
+        - DomainName
+    Export:
+      Name: DistributionDomainName
+  CloudFrontOriginAccessId:
+    Value:
+      Fn::GetAtt:
+        - CloudFrontOAI
+        - S3CanonicalUserId
+    Export:
+      Name: CloudFrontOAI
