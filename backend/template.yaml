@@ -1,10 +1,10 @@
-AWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
-Description: 'backend
+Description: "backend
 
   Sample SAM Template for backend
 
-  '
+  "
 Parameters:
   BucketName:
     Type: String
@@ -14,7 +14,7 @@ Parameters:
     Type: String
   SagemakerEndpoint:
     Type: String
-    LambdaCodeFile:
+  LambdaCodeFile:
     Type: String
 Globals:
   Function:
@@ -22,9 +22,9 @@ Globals:
     MemorySize: 512
   Api:
     Cors:
-      AllowMethods: '''*'''
-      AllowHeaders: '''*'''
-      AllowOrigin: '''*'''
+      AllowMethods: "'*'"
+      AllowHeaders: "'*'"
+      AllowOrigin: "'*'"
 Resources:
   PostFetchSimilarPhotosLambda:
     Type: AWS::Serverless::Function
@@ -43,25 +43,25 @@ Resources:
           SM_ENDPOINT:
             Ref: SagemakerEndpoint
       Policies:
-      - Version: '2012-10-17'
-        Statement:
-        - Sid: AllowSagemakerInvokeEndpoint
-          Effect: Allow
-          Action:
-          - sagemaker:InvokeEndpoint
-          Resource:
-          - Fn::Sub: arn:aws:sagemaker:${AWS::Region}:${AWS::AccountId}:endpoint/${SagemakerEndpoint}
-      - Version: '2012-10-17'
-        Statement:
-        - Sid: AllowESS
-          Effect: Allow
-          Action:
-          - es:*
-          Resource:
-          - Fn::Sub: arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/${DomainName}/*
-      - S3ReadPolicy:
-          BucketName:
-            Ref: BucketName
+        - Version: "2012-10-17"
+          Statement:
+            - Sid: AllowSagemakerInvokeEndpoint
+              Effect: Allow
+              Action:
+                - sagemaker:InvokeEndpoint
+              Resource:
+                - Fn::Sub: arn:aws:sagemaker:${AWS::Region}:${AWS::AccountId}:endpoint/${SagemakerEndpoint}
+        - Version: "2012-10-17"
+          Statement:
+            - Sid: AllowESS
+              Effect: Allow
+              Action:
+                - es:*
+              Resource:
+                - Fn::Sub: arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/${DomainName}/*
+        - S3ReadPolicy:
+            BucketName:
+              Ref: BucketName
       Events:
         PostURL:
           Type: Api
@@ -82,11 +82,11 @@ Outputs:
     Description: Hello World Lambda Function ARN
     Value:
       Fn::GetAtt:
-      - PostFetchSimilarPhotosLambda
-      - Arn
+        - PostFetchSimilarPhotosLambda
+        - Arn
   PostFetchSimilarPhotosLambdaIamRole:
     Description: Implicit IAM Role created for Hello World function
     Value:
       Fn::GetAtt:
-      - PostFetchSimilarPhotosLambda
-      - Arn
+        - PostFetchSimilarPhotosLambda
+        - Arn
