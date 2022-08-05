@@ -5,12 +5,13 @@ Parameters:
   SageMakerGitURL:
     Type: String
     Description: The name of the Git repository
-    Default: https://github.com/ksmin23/amazon-sagemaker-visual-search
+    Default: https://github.com/aws-samples/amazon-sagemaker-visual-search
 
 Resources:
   NotebookInstance:
     Type: AWS::SageMaker::NotebookInstance
     Properties:
+      PlatformIdentifier: notebook-al2-v2
       InstanceType: ml.t3.medium
       RoleArn: !GetAtt Role.Arn
       DefaultCodeRepository: !Ref SageMakerGitURL
@@ -74,6 +75,50 @@ Resources:
         IndexDocument: index.html
         ErrorDocument: error.html
 
+  CloudFrontOAI:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: !Sub "Allows CloudFront to access the S3 bucket: ${s3BucketHosting}"
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+
+  SiteBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref s3BucketHosting
+      PolicyDocument:
+        Statement:
+          - Action: s3:GetObject
+            Effect: Allow
+            Principal:
+              CanonicalUser: !GetAtt CloudFrontOAI.S3CanonicalUserId
+            Resource: !Sub "${s3BucketHosting.Arn}/*"
+        Version: "2012-10-17"
+
+  CloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        CustomErrorResponses:
+          - ErrorCachingMinTTL: 10
+            ErrorCode: 403
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+        DefaultCacheBehavior:
+          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
+          Compress: true
+          TargetOriginId: vissearchcloudfrontmyDistOrigin157DA494D
+          ViewerProtocolPolicy: allow-all
+        Enabled: true
+        HttpVersion: http2
+        IPV6Enabled: true
+        Origins:
+          - DomainName: !Sub "${s3BucketHosting}.s3.${AWS::Region}.${AWS::URLSuffix}"
+            Id: vissearchcloudfrontmyDistOrigin157DA494D
+            S3OriginConfig:
+              OriginAccessIdentity: !Sub "origin-access-identity/cloudfront/${CloudFrontOAI}"
+
   Domain:
     Type: AWS::OpenSearchService::Domain
     Properties:
@@ -91,9 +136,12 @@ Resources:
       EBSOptions:
         EBSEnabled: True
         VolumeSize: 10
-        VolumeType: gp2
+        VolumeType: gp3
 
 Outputs:
+  cfDomain:
+    Description: The CloudFront domain name
+    Value: !GetAtt CloudFrontDistribution.DomainName
   esHostName:
     Description: OpenSearch hostname
     Value: !GetAtt Domain.DomainEndpoint
@@ -111,18 +159,9 @@ Outputs:
     Value: !Ref s3BucketHosting
 
   S3BucketSecureURL:
-    Value: !Join
-      - ""
-      - - "https://"
-        - !GetAtt
-          - s3BucketHosting
-          - DomainName
+    Value: !Sub https//${s3BucketHosting.DomainName}/
     Description: Name of S3 bucket to hold website content
 
   SageMakerNotebookURL:
     Description: SageMaker Notebook Instance
-    Value: !Join
-      - ""
-      - - Fn::Sub: https://console.aws.amazon.com/sagemaker/home?region=${AWS::Region}#/notebook-instances/openNotebook/
-        - !GetAtt NotebookInstance.NotebookInstanceName
-        - "?view=lab"
+    Value: !Sub "https://console.aws.amazon.com/sagemaker/home?region=${AWS::Region}#/notebook-instances/openNotebook/${NotebookInstance.NotebookInstanceName}?view=lab"

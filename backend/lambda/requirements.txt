@@ -1,3 +1,5 @@
 requests
 boto3
 opensearch-py
+Pillow
+numpy

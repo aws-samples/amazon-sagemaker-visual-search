@@ -10,7 +10,7 @@ Parameters:
     Type: String
   DomainName:
     Type: String
-  ElasticSearchURL:
+  OpenSearchURL:
     Type: String
   SagemakerEndpoint:
     Type: String
@@ -30,18 +30,14 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri:
-        # https://github.com/aws/serverless-application-model/blob/master/HOWTO.md
-        # Using Intrinsic Functions
         Bucket: !Ref BucketName
         Key: !Ref LambdaCodeFile
       Handler: app.lambda_handler
-      Runtime: python3.7
+      Runtime: python3.8
       Environment:
         Variables:
-          ES_ENDPOINT:
-            Ref: ElasticSearchURL
-          SM_ENDPOINT:
-            Ref: SagemakerEndpoint
+          ES_ENDPOINT: !Ref OpenSearchURL
+          SM_ENDPOINT: !Ref SagemakerEndpoint
       Policies:
         - Version: "2012-10-17"
           Statement:
@@ -49,19 +45,16 @@ Resources:
               Effect: Allow
               Action:
                 - sagemaker:InvokeEndpoint
-              Resource:
-                - Fn::Sub: arn:aws:sagemaker:${AWS::Region}:${AWS::AccountId}:endpoint/${SagemakerEndpoint}
+              Resource: !Sub arn:aws:sagemaker:${AWS::Region}:${AWS::AccountId}:endpoint/${SagemakerEndpoint}
         - Version: "2012-10-17"
           Statement:
             - Sid: AllowESS
               Effect: Allow
               Action:
                 - es:*
-              Resource:
-                - Fn::Sub: arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/${DomainName}/*
+              Resource: !Sub arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/${DomainName}/*
         - S3ReadPolicy:
-            BucketName:
-              Ref: BucketName
+            BucketName: !Ref BucketName
       Events:
         PostURL:
           Type: Api
@@ -76,17 +69,7 @@ Resources:
 Outputs:
   ImageSimilarityApi:
     Description: API Gateway endpoint URL for Prod stage for fetchPhoto function
-    Value:
-      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/
+    Value: !Sub https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/
   PostFetchSimilarPhotosLambda:
-    Description: Hello World Lambda Function ARN
-    Value:
-      Fn::GetAtt:
-        - PostFetchSimilarPhotosLambda
-        - Arn
-  PostFetchSimilarPhotosLambdaIamRole:
-    Description: Implicit IAM Role created for Hello World function
-    Value:
-      Fn::GetAtt:
-        - PostFetchSimilarPhotosLambda
-        - Arn
+    Description: Lambda Function ARN
+    Value: !GetAtt PostFetchSimilarPhotosLambda.Arn

@@ -1,6 +1,14 @@
 # Created by https://www.toptal.com/developers/gitignore/api/amplify,dotenv,git,jupyternotebooks,macos,node,python,react,sam,visualstudiocode,windows
 # Edit at https://www.toptal.com/developers/gitignore?templates=amplify,dotenv,git,jupyternotebooks,macos,node,python,react,sam,visualstudiocode,windows
 
+### SAM ###
+# Ignore build directories for the AWS Serverless Application Model (SAM)
+# Info: https://aws.amazon.com/serverless/sam/
+# Docs: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-reference.html
+
+**/.aws-sam
+
+
 ### Amplify ###
 # AWS Amplify
 amplify/\#current-cloud-backend
@@ -57,7 +65,8 @@ ipython_config.py
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
+
 
 # Thumbnails
 ._*
@@ -295,6 +304,7 @@ docs/_build/
 target/
 
 # Jupyter Notebook
+.ipynb_checkpoints/
 
 # IPython
 
@@ -444,5 +454,10 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+**/_localtemplate*
+**/function.zip
+**/config/config.json
+
 
 # End of https://www.toptal.com/developers/gitignore/api/amplify,dotenv,git,jupyternotebooks,macos,node,python,react,sam,visualstudiocode,windows
