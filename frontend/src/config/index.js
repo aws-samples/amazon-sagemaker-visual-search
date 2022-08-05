@@ -1,5 +1,7 @@
 import Config from './config.json'
 
-export default {
-    apiEndpoint: Config.apiEndpoint
-};
+const config = {
+    apiEndpoint: Config.apiEndpoint,
+}
+
+export default config;

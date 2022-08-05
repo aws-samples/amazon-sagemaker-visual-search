@@ -1,4 +1,5 @@
 requests
 boto3
-elasticsearch < 7.14
-requests-aws4auth
+opensearch-py
+Pillow
+numpy
